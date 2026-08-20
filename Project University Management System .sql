@@ -587,3 +587,116 @@ Select Top 3
 From Course
 
 Order By CreditHours Desc;
+
+-------- Content Post 19 --------
+-- Like --
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    Email
+From Student
+Where FirstName Like 'O%';
+
+Select
+    StudentID,
+    FirstName,
+    LastName
+From Student
+Where LastName Like '%i';
+
+Select
+    CourseID,
+    CourseName,
+    CourseCode
+From Course
+Where CourseName Like '%Data%';
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    Email
+From Student
+Where Email Like '%@example.com';
+
+-- Between --
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    Salary
+From Instructor
+Where Salary Between 15000 And 18000;
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DateOfBirth
+From Student
+Where DateOfBirth Between '2003-01-01' And '2004-12-31';
+
+Select
+    StudentID,
+    CourseID,
+    Grade
+From Enrollment
+Where Grade Between 85 And 95;
+
+-- In --
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DepartmentID
+From Student
+Where DepartmentID In (1, 2);
+
+Select
+    CourseID,
+    CourseName,
+    CreditHours
+From Course
+Where CreditHours In (3, 4);
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    DepartmentID
+From Instructor
+Where DepartmentID In (1, 4);
+
+-- Null & Not Null --
+Select
+    EnrollmentID,
+    StudentID,
+    CourseID,
+    Grade
+From Enrollment
+Where Grade Is Null;
+
+Select
+    EnrollmentID,
+    StudentID,
+    CourseID,
+    Grade
+From Enrollment
+Where Grade Is Not Null;
+
+Select
+    StudentID,
+    Phone
+From Student_Phone
+Where Phone Is Not Null;
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DepartmentID
+From Student
+Where FirstName Like 'O%'
+And DepartmentID In (1, 2)
+Order By FirstName Asc;
