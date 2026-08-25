@@ -700,3 +700,122 @@ From Student
 Where FirstName Like 'O%'
 And DepartmentID In (1, 2)
 Order By FirstName Asc;
+
+-------- Content Post 20 --------
+-- Count --
+Select Count(*) As TotalStudents
+From Student;
+
+Select Count(*) As TotalInstructors
+From Instructor;
+
+Select Count(*) As TotalCourses
+From Course;
+
+-- Sum --
+Select Sum(Salary) As TotalSalaries
+From Instructor;
+
+Select Sum(Grade) As TotalGrades
+From Enrollment
+Where Grade Is Not Null;
+
+-- Avg -- 
+Select Avg(Salary) As AverageSalary
+From Instructor;
+
+Select Avg(Grade) As AverageGrade
+From Enrollment
+Where Grade Is Not Null;
+
+-- Min --
+Select Min(Salary) As MinimumSalary
+From Instructor;
+
+Select Min(Grade) As MinimumGrade
+From Enrollment
+Where Grade Is Not Null;
+
+-- Max --
+Select Max(Salary) As MaximumSalary
+From Instructor;
+
+Select Max(Grade) As MaximumGrade
+From Enrollment
+Where Grade Is Not Null;
+ -- All Function --
+Select
+    Count(*) As TotalInstructors,
+    Sum(Salary) As TotalSalaries,
+    Avg(Salary) As AverageSalary,
+    Min(Salary) As MinimumSalary,
+    Max(Salary) As MaximumSalary
+
+From Instructor;
+
+Select
+    Count(Grade) As GradedEnrollments,
+    Sum(Grade) As TotalGrades,
+    Avg(Grade) As AverageGrade,
+    Min(Grade) As MinimumGrade,
+    Max(Grade) As MaximumGrade
+
+From Enrollment;
+
+-------- Content Post 21 --------
+-- Group By --
+Select
+    DepartmentID,
+    Count(*) As StudentCount
+From Student
+Group By DepartmentID;
+
+Select
+    DepartmentID,
+    Count(*) As CourseCount
+From Course
+Group By DepartmentID;
+
+Select
+    DepartmentID,
+    Avg(Salary) As AverageSalary
+From Instructor
+Group By DepartmentID;
+
+Select
+    Gender,
+    Count(*) As StudentCount
+From Student
+Group By Gender;
+
+-- Having --
+Select
+    DepartmentID,
+    Count(*) As StudentCount
+From Student
+Group By DepartmentID
+Having Count(*) > 1;
+
+Select
+    DepartmentID,
+    Count(*) As CourseCount
+From Course
+Group By DepartmentID
+Having Count(*) > 1;
+
+Select
+    DepartmentID,
+    Avg(Salary) As AverageSalary
+From Instructor
+Group By DepartmentID
+Having Avg(Salary) > 16000;
+
+-- Where & Group By & Having -- 
+Select
+    CourseID,
+    Count(*) As EnrollmentCount
+From Enrollment
+
+Where Grade Is Not Null
+Group By CourseID
+Having Count(*) > 1;
