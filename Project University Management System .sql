@@ -819,3 +819,151 @@ From Enrollment
 Where Grade Is Not Null
 Group By CourseID
 Having Count(*) > 1;
+
+-- Content Post 22 -- 
+-- Inner Join --
+
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Departments.DepartmentName
+From Student
+Inner Join Departments
+    On Student.DepartmentID = Departments.DepartmentID;
+
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Student.Email,
+    Departments.DepartmentName
+From Student
+Inner Join Departments
+    On Student.DepartmentID = Departments.DepartmentID
+Where Departments.DepartmentCode = 'CS';
+
+Select
+    Enrollment.EnrollmentID,
+    Student.FirstName,
+    Student.LastName,
+    Course.CourseName,
+    Enrollment.Grade
+From Enrollment
+Inner Join Student
+    On Enrollment.StudentID = Student.StudentID
+Inner Join Course
+    On Enrollment.CourseID = Course.CourseID;
+
+-- Left Join --
+
+Select
+    Departments.DepartmentID,
+    Departments.DepartmentName,
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName
+From Departments
+Left Join Student
+    On Departments.DepartmentID = Student.DepartmentID;
+
+Select
+    Course.CourseID,
+    Course.CourseName,
+    Enrollment.EnrollmentID,
+    Enrollment.StudentID,
+    Enrollment.Grade
+From Course
+Left Join Enrollment
+    On Course.CourseID = Enrollment.CourseID;
+
+-- Right Join --
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Departments.DepartmentID,
+    Departments.DepartmentName
+From Student
+Right Join Departments
+    On Student.DepartmentID = Departments.DepartmentID;
+
+-- Full Our Join --
+Select
+    Departments.DepartmentID,
+    Departments.DepartmentName,
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName
+From Departments
+Full Outer Join Student
+    On Departments.DepartmentID = Student.DepartmentID;
+
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Course.CourseName,
+    Course.CourseCode,
+    Enrollment.Grade
+From Student
+
+Inner Join Enrollment
+    On Student.StudentID = Enrollment.StudentID
+
+Inner Join Course
+    On Enrollment.CourseID = Course.CourseID
+
+Order By Student.LastName;
+
+-- Self Join --
+Select
+    Instructor1.InstructorID,
+    Instructor1.FirstName,
+    Instructor1.LastName,
+    Instructor2.InstructorID,
+    Instructor2.FirstName,
+    Instructor2.LastName,
+    Instructor1.DepartmentID
+From Instructor As Instructor1
+
+Inner Join Instructor As Instructor2
+    On Instructor1.DepartmentID = Instructor2.DepartmentID
+
+And Instructor1.InstructorID < Instructor2.InstructorID;
+
+Select
+    Instructor1.FirstName,
+    Instructor1.LastName,
+    Instructor2.FirstName,
+    Instructor2.LastName,
+    Departments.DepartmentName
+From Instructor As Instructor1
+
+Inner Join Instructor As Instructor2
+    On Instructor1.DepartmentID = Instructor2.DepartmentID
+
+And Instructor1.InstructorID < Instructor2.InstructorID
+
+Inner Join Departments
+    On Instructor1.DepartmentID = Departments.DepartmentID;
+
+-- Cross Join --
+Select
+    Course.CourseName,
+    Classroom.RoomNumber,
+    Classroom.Building
+From Course
+
+Cross Join Classroom;
+
+Select
+    Course.CourseCode,
+    Course.CourseName,
+    Classroom.RoomNumber,
+    Classroom.Building
+From Course
+
+Cross Join Classroom
+
+Order By Course.CourseCode, Classroom.RoomNumber;
