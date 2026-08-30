@@ -967,3 +967,81 @@ From Course
 Cross Join Classroom
 
 Order By Course.CourseCode, Classroom.RoomNumber;
+
+-- Content Post 23 --
+Select
+    EnrollmentID,
+    StudentID,
+    CourseID,
+    Grade,
+    Case
+        When Grade >= 90 Then 'Excellent'
+        When Grade >= 80 Then 'Very Good'
+        When Grade >= 70 Then 'Good'
+        When Grade >= 60 Then 'Pass'
+        Else 'Fail'
+    End As GradeStatus
+From Enrollment;
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    Salary,
+    Case
+        When Salary >= 18000 Then 'High Salary'
+        When Salary >= 16000 Then 'Medium Salary'
+        Else 'Low Salary'
+    End As SalaryLevel
+From Instructor;
+
+Select
+    CourseID,
+    CourseName,
+    CreditHours,
+    Case
+        When CreditHours = 4 Then 'Advanced Course'
+        When CreditHours = 3 Then 'Standard Course'
+        Else 'Other'
+    End As CourseLevel
+From Course;
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    Gender,
+    Case
+        When Gender = 'M' Then 'Male'
+        When Gender = 'F' Then 'Female'
+        Else 'Unknown'
+    End As GenderName
+From Student;
+
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Departments.DepartmentName,
+    Case
+        When Departments.DepartmentCode = 'CS' Then 'Computer Science Student'
+        When Departments.DepartmentCode = 'IT' Then 'IT Student'
+        Else 'Other Department'
+    End As StudentType
+From Student
+
+Inner Join Departments
+    On Student.DepartmentID = Departments.DepartmentID;
+
+Select
+    CourseID,
+    Count(*) As EnrollmentCount,
+    Case
+        When Count(*) >= 2 Then 'Popular Course'
+        Else 'Less Popular Course'
+    End As CourseStatus
+From Enrollment
+
+Group By CourseID;
+
+
