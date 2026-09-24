@@ -1044,4 +1044,607 @@ From Enrollment
 
 Group By CourseID;
 
+-- Content Post 24 --
+-- Subqueries --
+
+-- Subquery in WHERE --
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    Salary
+From Instructor
+
+Where Salary >
+(
+    Select Avg(Salary)
+    From Instructor
+);
+
+
+-- Subquery in SELECT --
+
+Select
+    FirstName,
+    LastName,
+    Salary,
+
+    (
+        Select Avg(Salary)
+        From Instructor
+    ) As AverageSalary
+
+From Instructor;
+
+
+-- Subquery with IN --
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DepartmentID
+From Student
+
+Where DepartmentID In
+(
+    Select DepartmentID
+    From Departments
+
+    Where DepartmentCode In ('CS', 'IT')
+);
+
+
+-- Subquery with MAX --
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    Salary
+From Instructor
+
+Where Salary =
+(
+    Select Max(Salary)
+    From Instructor
+);
+
+
+-- Subquery with COUNT --
+
+Select
+    CourseID,
+    CourseName
+From Course
+
+Where CourseID In
+(
+    Select CourseID
+    From Enrollment
+
+    Group By CourseID
+
+    Having Count(*) > 1
+);
+
+
+-- Content Post 25 --
+-- EXISTS --
+
+-- EXISTS --
+
+Select
+    DepartmentID,
+    DepartmentName
+From Departments
+
+Where Exists
+(
+    Select 1
+    From Student
+
+    Where Student.DepartmentID = Departments.DepartmentID
+);
+
+
+-- NOT EXISTS --
+
+Select
+    DepartmentID,
+    DepartmentName
+From Departments
+
+Where Not Exists
+(
+    Select 1
+    From Student
+
+    Where Student.DepartmentID = Departments.DepartmentID
+);
+
+
+-- EXISTS with Course --
+
+Select
+    CourseID,
+    CourseName,
+    CourseCode
+From Course
+
+Where Exists
+(
+    Select 1
+    From Enrollment
+
+    Where Enrollment.CourseID = Course.CourseID
+);
+
+
+-- NOT EXISTS with Course --
+
+Select
+    CourseID,
+    CourseName,
+    CourseCode
+From Course
+
+Where Not Exists
+(
+    Select 1
+    From Enrollment
+
+    Where Enrollment.CourseID = Course.CourseID
+);
+
+
+-- EXISTS with Student --
+
+Select
+    StudentID,
+    FirstName,
+    LastName
+From Student
+
+Where Exists
+(
+    Select 1
+    From Enrollment
+
+    Where Enrollment.StudentID = Student.StudentID
+);
+
+
+-- Content Post 26 --
+-- CTE --
+
+-- Basic CTE --
+
+With StudentData As
+(
+    Select
+        StudentID,
+        FirstName,
+        LastName,
+        DepartmentID
+    From Student
+)
+
+Select *
+From StudentData;
+
+
+-- CTE with WHERE --
+
+With StudentData As
+(
+    Select
+        StudentID,
+        FirstName,
+        LastName,
+        DepartmentID
+    From Student
+
+    Where DepartmentID = 1
+)
+
+Select *
+From StudentData;
+
+
+-- CTE with JOIN --
+
+With StudentData As
+(
+    Select
+        Student.StudentID,
+        Student.FirstName,
+        Student.LastName,
+        Departments.DepartmentName
+    From Student
+
+    Inner Join Departments
+        On Student.DepartmentID = Departments.DepartmentID
+)
+
+Select *
+From StudentData;
+
+
+-- CTE with GROUP BY --
+
+With DepartmentStudents As
+(
+    Select
+        DepartmentID,
+        Count(*) As StudentCount
+    From Student
+
+    Group By DepartmentID
+)
+
+Select
+    DepartmentID,
+    StudentCount
+From DepartmentStudents
+
+Where StudentCount > 1;
+
+
+-- Multiple CTEs --
+
+With StudentData As
+(
+    Select
+        StudentID,
+        FirstName,
+        LastName,
+        DepartmentID
+    From Student
+),
+
+DepartmentData As
+(
+    Select
+        DepartmentID,
+        DepartmentName
+    From Departments
+)
+
+Select
+    StudentData.StudentID,
+    StudentData.FirstName,
+    StudentData.LastName,
+    DepartmentData.DepartmentName
+From StudentData
+
+Inner Join DepartmentData
+    On StudentData.DepartmentID = DepartmentData.DepartmentID;
+
+
+-- Content Post 27 --
+-- Window Functions --
+
+-- OVER() --
+
+Select
+    FirstName,
+    LastName,
+    Salary,
+
+    Avg(Salary) Over() As AverageSalary
+
+From Instructor;
+
+
+-- PARTITION BY --
+
+Select
+    FirstName,
+    LastName,
+    DepartmentID,
+    Salary,
+
+    Avg(Salary) Over
+    (
+        Partition By DepartmentID
+    ) As DepartmentAverage
+
+From Instructor;
+
+
+-- ROW_NUMBER() --
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    Salary,
+
+    Row_Number() Over
+    (
+        Order By Salary Desc
+    ) As RowNumber
+
+From Instructor;
+
+
+-- RANK() --
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    Salary,
+
+    Rank() Over
+    (
+        Order By Salary Desc
+    ) As SalaryRank
+
+From Instructor;
+
+
+-- ROW_NUMBER() with PARTITION BY --
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    DepartmentID,
+    Salary,
+
+    Row_Number() Over
+    (
+        Partition By DepartmentID
+        Order By Salary Desc
+    ) As RowNumber
+
+From Instructor;
+
+
+-- RANK() with PARTITION BY --
+
+Select
+    InstructorID,
+    FirstName,
+    LastName,
+    DepartmentID,
+    Salary,
+
+    Rank() Over
+    (
+        Partition By DepartmentID
+        Order By Salary Desc
+    ) As SalaryRank
+
+From Instructor;
+
+
+-- Window Function with Enrollment --
+
+Select
+    EnrollmentID,
+    StudentID,
+    CourseID,
+    Grade,
+
+    Avg(Grade) Over() As AverageGrade
+
+From Enrollment
+
+Where Grade Is Not Null;
+
+
+-- Content Post 28 --
+-- Views --
+
+-- Create View --
+
+Create View StudentDepartmentView
+As
+
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Departments.DepartmentName
+
+From Student
+
+Inner Join Departments
+    On Student.DepartmentID = Departments.DepartmentID;
+
+
+-- Select From View --
+
+Select *
+From StudentDepartmentView;
+
+
+-- Select Specific Columns --
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DepartmentName
+
+From StudentDepartmentView;
+
+
+-- Filter View --
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DepartmentName
+
+From StudentDepartmentView
+
+Where DepartmentName = 'Computer Science';
+
+
+-- Create Course Enrollment View --
+
+Create View CourseEnrollmentView
+As
+
+Select
+    Student.StudentID,
+    Student.FirstName,
+    Student.LastName,
+    Course.CourseName,
+    Course.CourseCode,
+    Enrollment.Grade
+
+From Student
+
+Inner Join Enrollment
+    On Student.StudentID = Enrollment.StudentID
+
+Inner Join Course
+    On Enrollment.CourseID = Course.CourseID;
+
+
+-- Select From Course View --
+
+Select *
+From CourseEnrollmentView;
+
+
+-- Content Post 29 --
+-- Indexes --
+
+-- Create Nonclustered Index --
+
+Create Nonclustered Index IX_Student_DepartmentID
+On Student(DepartmentID);
+
+
+-- Create Index on Enrollment StudentID --
+
+Create Nonclustered Index IX_Enrollment_StudentID
+On Enrollment(StudentID);
+
+
+-- Create Index on Enrollment CourseID --
+
+Create Nonclustered Index IX_Enrollment_CourseID
+On Enrollment(CourseID);
+
+-- Query Using DepartmentID --
+
+Select
+    StudentID,
+    FirstName,
+    LastName,
+    DepartmentID
+
+From Student
+
+Where DepartmentID = 1;
+
+-- Query Using Enrollment StudentID --
+
+Select
+    EnrollmentID,
+    StudentID,
+    CourseID,
+    Grade
+
+From Enrollment
+Where StudentID = 2;
+
+
+-- Composite Index --
+
+Create Nonclustered Index IX_Enrollment_Student_Course
+On Enrollment(StudentID, CourseID);
+
+-- View Existing Indexes --
+
+Select
+    name,
+    type_desc
+From sys.indexes
+
+Where object_id = OBJECT_ID('Student');
+
+
+-- Content Post 30 --
+-- Transactions & ACID --
+
+-- BEGIN TRANSACTION --
+
+Begin Transaction;
+
+Update Enrollment
+
+Set Grade = 95.00
+
+Where EnrollmentID = 3;
+
+-- ROLLBACK --
+Rollback;
+
+-- BEGIN TRANSACTION + COMMIT --
+Begin Transaction;
+Update Enrollment
+Set Grade = 95.00
+Where EnrollmentID = 3;
+Commit;
+
+
+-- Multiple Operations --
+
+Begin Transaction;
+Update Departments
+Set Phone = '01018888888'
+Where DepartmentID = 1;
+
+Update Instructor
+Set Salary = 21000.00
+Where InstructorID = 1;
+
+Commit;
+
+
+-- ROLLBACK Multiple Operations --
+
+Begin Transaction;
+
+Update Departments
+Set Phone = '01017777777'
+Where DepartmentID = 1;
+
+Update Instructor
+Set Salary = 22000.00
+Where InstructorID = 1;
+
+Rollback;
+
+
+-- TRY / CATCH Transaction --
+
+Begin Try
+
+    Begin Transaction;
+
+    Update Departments
+    Set Phone = '01016666666'
+    Where DepartmentID = 1;
+
+    Update Instructor
+    Set Salary = 23000.00
+    Where InstructorID = 1;
+
+    Commit;
+End Try
+Begin Catch
+    Rollback;
+End Catch;
+
 
